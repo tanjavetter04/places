@@ -17,6 +17,7 @@
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@tailwindcss/typography": "^0.5.13",
+		"@types/mapbox-gl": "^3.1.0",
 		"autoprefixer": "^10.4.19",
 		"daisyui": "^4.10.5",
 		"postcss": "^8.4.38",
@@ -32,6 +33,7 @@
 	"type": "module",
 	"dependencies": {
 		"@supabase/ssr": "^0.3.0",
-		"@supabase/supabase-js": "^2.43.0"
+		"@supabase/supabase-js": "^2.43.0",
+		"mapbox-gl": "^3.3.0"
 	}
 }
