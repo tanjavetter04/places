@@ -14,5 +14,12 @@
 		</article>
 	</div>
 {:else}
-    <p>Not logged in</p>
+<div class="flex justify-center items-center h-screen">
+    <article class="prose text-center">
+        <h1>Not logged in</h1>
+        <form action="/login">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </article>
+</div>
 {/if}

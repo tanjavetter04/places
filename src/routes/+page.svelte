@@ -8,24 +8,19 @@
 	<title>Places</title>
 </svelte:head>
 
-{#if data.session}
-	<div class="flex justify-center items-center h-screen">
-		<article class="prose text-center">
-			<h1>Welcome, {data.session.user.email}</h1>
-			<form action="/api/logout" method="POST">
-				<button type="submit" class="btn btn-primary">Logout</button>
-			</form>
-		</article>
-	</div>
-{:else}
 	<div class="flex justify-center items-center h-screen">
 		<article class="prose text-center">
 			<h1>Places</h1>
 			<h2>visualize where you have been</h2>
 			<br>
-			<form action="/login">
-				<button class="btn btn-primary">Login</button>
-			</form>
+			{#if !data.session}
+				<form action="/login">
+					<button class="btn btn-primary">Login</button>
+				</form>
+			{:else}
+				<form action="/api/logout" method="POST">
+					<button class="btn btn-primary">Logout</button>
+				</form>
+			{/if}
 		</article>
 	</div>
-{/if}
