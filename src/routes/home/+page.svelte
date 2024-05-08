@@ -27,6 +27,26 @@
 			})
 		);
 
+		map.on('load', function () {
+			map.addLayer(
+				{
+					id: 'country-boundaries',
+					source: {
+						type: 'vector',
+						url: 'mapbox://mapbox.country-boundaries-v1'
+					},
+					'source-layer': 'country_boundaries',
+					type: 'fill',
+					paint: {
+						'fill-color': '#d2361e',
+						'fill-opacity': 0.4
+					}
+				},
+				'country-label'
+			);
+
+			map.setFilter('country-boundaries', ['in', 'iso_3166_1_alpha_3', 'NLD', 'ITA']);
+		});
 	});
 
 	export let data: PageData;
