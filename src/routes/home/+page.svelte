@@ -36,7 +36,7 @@
 {:else}
 	<div class="flex justify-center items-center h-screen">
 		<article class="prose text-center">
-			<h1>Not logged in</h1>
+			<h1>You are not logged in</h1>
 			<form action="/login">
 				<button type="submit" class="btn btn-primary">Login</button>
 			</form>
@@ -47,7 +47,7 @@
 <style>
 	#map {
 		position: fixed;
-		top: 0;
+		top: 50;
 		left: 0;
 		width: 100%;
 		height: 100%;

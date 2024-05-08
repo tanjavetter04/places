@@ -3,6 +3,7 @@
 	import '../styles.css'
 	import { invalidate } from '$app/navigation'
 	import { onMount } from 'svelte'
+	import Navbar from '$lib/NavBar.svelte';
 
 	export let data
 
@@ -23,5 +24,7 @@
 <svelte:head>
 	<title>Places</title>
 </svelte:head>
+
+<Navbar/> 
 
 <slot />
