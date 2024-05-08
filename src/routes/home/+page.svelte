@@ -4,6 +4,8 @@
 	import { onMount } from 'svelte';
 	import mapboxgl from 'mapbox-gl';
 	import 'mapbox-gl/dist/mapbox-gl.css';
+	import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+	import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 	let map;
 
@@ -17,6 +19,14 @@
 			center: [5, 46],
 			zoom: 2
 		});
+
+		map.addControl(
+			new MapboxGeocoder({
+				accessToken: mapboxgl.accessToken,
+				mapboxgl: mapboxgl
+			})
+		);
+
 	});
 
 	export let data: PageData;
@@ -48,10 +58,7 @@
 	#map {
 		position: fixed;
 		top: 50;
-		left: 0;
 		width: 100%;
 		height: 100%;
-		margin: 0;
-		padding: 0;
 	}
 </style>
