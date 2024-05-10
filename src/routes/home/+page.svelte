@@ -51,8 +51,13 @@
 		geocoder.on('result', function (e) {
 			console.log(e.result.center);
 			savePoint(e.result.center[0], e.result.center[1]);
-			
 		});
+
+		var markers = [];
+		for (let i = 50; i < 60; i++) {
+			let marker = new mapboxgl.Marker().setLngLat([i, 7]).addTo(map);
+			markers.push(marker);
+		}
 	});
 
 	export let data: PageData;

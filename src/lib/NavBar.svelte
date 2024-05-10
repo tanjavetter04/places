@@ -5,11 +5,11 @@
 				<a href="/home" class="btn btn-ghost text-xl">Places</a>
 			</div>
 			<div class="flex-none">
-				<form action="/api/logout" method="POST">
-					<button type="submit" class="btn btn-ghost text-xl">Logout</button>
-				</form>
 				<form action="/login">
 					<button type="submit" class="btn btn-ghost text-xl">Login</button>
+				</form>
+				<form action="/api/logout" method="POST">
+					<button type="submit" class="btn btn-ghost text-xl">Logout</button>
 				</form>
 			</div>
 		</div>
