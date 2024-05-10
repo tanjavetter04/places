@@ -50,25 +50,24 @@
 
 		geocoder.on('result', function (e) {
 			console.log(e.result.center);
+			savePoint(e.result.center[0], e.result.center[1]);
+			
 		});
 	});
 
 	export let data: PageData;
 
-	
+	export async function savePoint(lat: number, long: number) {
+		let userId = data.session?.user.id
+		const response = await fetch('api/savePoint', {
+    		method: 'POST',
+			body: JSON.stringify({ lat, long, userId })
+		});
+	}
 </script>
 
-<div id="map" />
-
 {#if data.session}
-	<div class="flex justify-center items-center h-screen">
-		<article class="prose text-center">
-			<h1>Welcome, {data.session.user.email}</h1>
-			<form action="/api/logout" method="POST">
-				<button type="submit" class="btn btn-primary">Logout</button>
-			</form>
-		</article>
-	</div>
+	<div id="map" />
 {:else}
 	<div class="flex justify-center items-center h-screen">
 		<article class="prose text-center">
