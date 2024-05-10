@@ -20,12 +20,12 @@
 			zoom: 2
 		});
 
-		map.addControl(
-			new MapboxGeocoder({
-				accessToken: mapboxgl.accessToken,
-				mapboxgl: mapboxgl
-			})
-		);
+		const geocoder = new MapboxGeocoder({
+			accessToken: mapboxgl.accessToken,
+			mapboxgl: mapboxgl
+		});
+
+		map.addControl(geocoder);
 
 		map.on('load', function () {
 			map.addLayer(
@@ -45,11 +45,17 @@
 				'country-label'
 			);
 
-			map.setFilter('country-boundaries', ['in', 'iso_3166_1_alpha_3', 'NLD', 'ITA']);
+			map.setFilter('country-boundaries', ['in', 'iso_3166_1_alpha_3', 'NLD', 'ITA', 'USA']);
+		});
+
+		geocoder.on('result', function (e) {
+			console.log(e.result.center);
 		});
 	});
 
 	export let data: PageData;
+
+	
 </script>
 
 <div id="map" />
