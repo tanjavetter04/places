@@ -54,17 +54,22 @@
 		});
 
 		var markers = [];
-		for (let i = 50; i < 60; i++) {
-			let marker = new mapboxgl.Marker().setLngLat([i, 7]).addTo(map);
-			markers.push(marker);
-		}
+		const response = await fetch('api/points', {
+			method: 'GET'
+		});
+		response.json().then(function (value) {
+			for (let i = 0; i < value.length; i++) {
+				let marker = new mapboxgl.Marker().setLngLat([value[i].latitude, value[i].longitude]).addTo(map);
+				markers.push(marker);
+			}
+		});
 	});
 
 	export let data: PageData;
 
 	export async function savePoint(lat: number, long: number) {
-		const response = await fetch('api/savePoint', {
-    		method: 'POST',
+		await fetch('api/points', {
+			method: 'POST',
 			body: JSON.stringify({ lat, long })
 		});
 	}
@@ -77,7 +82,9 @@
 		<article class="prose text-center">
 			<h1>You are not logged in</h1>
 			<form action="/login">
-				<button type="submit" class="btn btn-primary bg-indigo-500 hover:bg-indigo-400">Login</button>
+				<button type="submit" class="btn btn-primary bg-indigo-500 hover:bg-indigo-400"
+					>Login</button
+				>
 			</form>
 		</article>
 	</div>
