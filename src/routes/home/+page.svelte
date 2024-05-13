@@ -78,7 +78,7 @@
 		<article class="prose text-center">
 			<h1>You are not logged in</h1>
 			<form action="/login">
-				<button type="submit" class="btn btn-primary">Login</button>
+				<button type="submit" class="btn btn-primary bg-indigo-500 hover:bg-indigo-400">Login</button>
 			</form>
 		</article>
 	</div>
