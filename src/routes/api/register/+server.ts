@@ -3,15 +3,15 @@ import type { RequestHandler } from "./$types"
 
 export const POST: RequestHandler = async ({ locals, request }) => {
     const formData = Object.fromEntries(await request.formData())
-    
-    const { data: user, error: err } = await locals.supabase.auth.signUp({
+
+    const { error: err } = await locals.supabase.auth.signUp({
         email: formData.email as string,
         password: formData.password as string,
     })
 
-    if(err) {
-        throw error(500 , {message: 'Something went wrong registering you. Try again' })
-      }
+    if (err) {
+        throw error(500, { message: 'Something went wrong registering you. Try again' })
+    }
 
     redirect(303, "/home")
 }

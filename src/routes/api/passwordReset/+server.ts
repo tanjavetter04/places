@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
     if(err) {
         throw error(500 , {message: 'Something went wrong resetting your password. Try again' })
-      }
+    }
 
     redirect(303, "/")
 }

@@ -9,7 +9,6 @@ export const POST: RequestHandler = async ({ locals, cookies }) => {
 	}
 
 	await cookies.delete('sessionId', { path: '/' })
-	console.log(cookies.get('sessionId'));
 
 	redirect(303, "/")
 }

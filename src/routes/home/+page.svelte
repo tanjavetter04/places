@@ -63,10 +63,9 @@
 	export let data: PageData;
 
 	export async function savePoint(lat: number, long: number) {
-		let userId = data.session?.user.id
 		const response = await fetch('api/savePoint', {
     		method: 'POST',
-			body: JSON.stringify({ lat, long, userId })
+			body: JSON.stringify({ lat, long })
 		});
 	}
 </script>
