@@ -13,9 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
     redirect(303, "/home")
 }
 
-export const GET: RequestHandler = async ({ request }) => {
-    console.log(...request.headers);
-
-    const { error: err } = await supabase.from('points').select('latitude, longitude').eq('user_id', 'test' )
-    return new Response(JSON.stringify("hallo"), { status: 200 })
+export const GET: RequestHandler = async ({ cookies }) => {
+    const { data, error: err } = await supabase.from('points').select('latitude, longitude').eq('user_id', cookies.get('sessionId'))
+    return new Response(JSON.stringify(data), { status: 200 })
 }
