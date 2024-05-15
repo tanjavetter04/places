@@ -8,6 +8,7 @@
 	import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 	let map;
+	var filter: string[] = ['in', 'iso_3166_1_alpha_3', 'DEU']
 
 	onMount(async () => {
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
@@ -39,17 +40,17 @@
 					type: 'fill',
 					paint: {
 						'fill-color': '#d2361e',
-						'fill-opacity': 0.4
+						'fill-opacity': 1
 					}
 				},
 				'country-label'
 			);
 
-			map.setFilter('country-boundaries', ['in', 'iso_3166_1_alpha_3', 'NLD', 'ITA', 'USA']);
+			//showCountries()
+			map.setFilter('country-boundaries', ...filter);
 		});
 
 		geocoder.on('result', function (e) {
-			console.log(e.result.center);
 			savePoint(e.result.center[0], e.result.center[1]);
 		});
 
@@ -58,10 +59,10 @@
 
 	export let data: PageData;
 
-	async function savePoint(lat: number, long: number) {
+	async function savePoint(long: number, lat: number) {
 		await fetch('api/points', {
 			method: 'POST',
-			body: JSON.stringify({ lat, long })
+			body: JSON.stringify({ long, lat })
 		});
 		getPoints();
 	}
@@ -73,9 +74,23 @@
 		});
 		response.json().then(function (value) {
 			for (let i = 0; i < value.length; i++) {
-				let marker = new mapboxgl.Marker().setLngLat([value[i].latitude, value[i].longitude]).addTo(map);
+				let marker = new mapboxgl.Marker()
+					.setLngLat([value[i].longitude, value[i].latitude])
+					.addTo(map);
 				markers.push(marker);
 			}
+		});
+	}
+
+	async function showCountries() {
+		const response = await fetch('api/getCountries', {
+			method: 'GET'
+		});
+		response.json().then(function (value) {
+			for (var i = 0; i < value.length; i++) {
+				filter.push(value[i]['country']);
+			}
+			console.log(filter)
 		});
 	}
 </script>
