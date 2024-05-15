@@ -64,10 +64,10 @@
 
 	export let data: PageData;
 
-	async function savePoint(long: number, lat: number) {
+	async function savePoint(longitude: number, latitude: number) {
 		await fetch('api/points', {
 			method: 'POST',
-			body: JSON.stringify({ long, lat })
+			body: JSON.stringify({ longitude, latitude })
 		});
 		getPoints();
 		showCountries();
@@ -83,9 +83,38 @@
 				let marker = new mapboxgl.Marker()
 					.setLngLat([value[i].longitude, value[i].latitude])
 					.addTo(map);
+
+				const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+					<div>
+						<p>Koordinaten: ${value[i].longitude}, ${value[i].latitude}</p>
+						<button id="delete-marker-${i}">Löschen</button>
+					</div>
+				`);
+
+				marker.setPopup(popup);
+
+				marker.getElement().addEventListener('click', () => {
+					popup.on('open', () => {
+						const deleteButton = document.getElementById(`delete-marker-${i}`);
+						deleteButton.addEventListener('click', () => {
+							removePoint(value[i].longitude, value[i].latitude);
+							console.log("hello")
+						});
+					});
+				});
+
 				markers.push(marker);
 			}
 		});
+	}
+
+	async function removePoint(longitude: number, latitude: number) {
+		const response = await fetch('api/deletePoint', {
+			method: 'DELETE',
+			body: JSON.stringify({ longitude, latitude })
+		});
+		getPoints();
+		showCountries();
 	}
 
 	async function showCountries() {
@@ -96,6 +125,7 @@
 		const countries = data.map((item) => item.country);
 		const filter: string[] = ['in', 'iso_3166_1_alpha_3', ...countries];
 		map.setFilter('country-boundaries', filter);
+		console.log(filter)
 		return filter;
 	}
 </script>

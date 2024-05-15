@@ -11,26 +11,25 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         user_id = cookies.get('sessionId')
     }
     
-    const { long, lat } = await request.json();
+    const { longitude, latitude } = await request.json();
 
-    const { error: err } = await supabase.from('points').insert([{ longitude: long, latitude: lat, user_id: user_id }])
+    const { error: err } = await supabase.from('points').insert([{ longitude: longitude, latitude: latitude, user_id: user_id }])
 
     if (err) {
         throw error(500, { message: 'Something went wrong saving the point. Try again' })
     }
 
-    getCountry(long, lat, user_id)
+    getCountry(longitude, latitude, user_id)
 
     redirect(303, "/home")
 }
 
-async function getCountry(long: string, lat: string, user_id: string | undefined) {
+async function getCountry(longitude: string, latitude: string, user_id: string | undefined) {
     let url = new URL('https://api.mapbox.com/search/geocode/v6/reverse')
-    url.searchParams.append('longitude', long)
-    url.searchParams.append('latitude', lat)
+    url.searchParams.append('longitude', longitude)
+    url.searchParams.append('latitude', latitude)
     url.searchParams.append('access_token', PUBLIC_MAPBOX_TOKEN)
     
-    console.log(long + "; " + lat)
     const response = await fetch(url, {
         method: 'GET'
     })
