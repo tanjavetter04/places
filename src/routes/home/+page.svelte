@@ -53,6 +53,20 @@
 			savePoint(e.result.center[0], e.result.center[1]);
 		});
 
+		getPoints();
+	});
+
+	export let data: PageData;
+
+	async function savePoint(lat: number, long: number) {
+		await fetch('api/points', {
+			method: 'POST',
+			body: JSON.stringify({ lat, long })
+		});
+		getPoints();
+	}
+
+	async function getPoints() {
 		var markers = [];
 		const response = await fetch('api/points', {
 			method: 'GET'
@@ -62,15 +76,6 @@
 				let marker = new mapboxgl.Marker().setLngLat([value[i].latitude, value[i].longitude]).addTo(map);
 				markers.push(marker);
 			}
-		});
-	});
-
-	export let data: PageData;
-
-	export async function savePoint(lat: number, long: number) {
-		await fetch('api/points', {
-			method: 'POST',
-			body: JSON.stringify({ lat, long })
 		});
 	}
 </script>
