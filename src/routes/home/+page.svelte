@@ -7,8 +7,8 @@
 	import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 	import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
-	let map;
-	var filter: string[] = ['in', 'iso_3166_1_alpha_3', 'DEU']
+	let map: mapboxgl.Map;
+	var filter: string[] = ['in', 'iso_3166_1_alpha_3'];
 
 	onMount(async () => {
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
@@ -40,14 +40,19 @@
 					type: 'fill',
 					paint: {
 						'fill-color': '#d2361e',
-						'fill-opacity': 1
+						'fill-opacity': 0.4
 					}
 				},
 				'country-label'
 			);
 
-			//showCountries()
-			map.setFilter('country-boundaries', ...filter);
+			showCountries()
+				.then((filter) => {
+					map.setFilter('country-boundaries', filter);
+				})
+				.catch((error) => {
+					console.error('Error fetching the countries:', error);
+				});
 		});
 
 		geocoder.on('result', function (e) {
@@ -65,6 +70,7 @@
 			body: JSON.stringify({ long, lat })
 		});
 		getPoints();
+		showCountries();
 	}
 
 	async function getPoints() {
@@ -86,12 +92,11 @@
 		const response = await fetch('api/getCountries', {
 			method: 'GET'
 		});
-		response.json().then(function (value) {
-			for (var i = 0; i < value.length; i++) {
-				filter.push(value[i]['country']);
-			}
-			console.log(filter)
-		});
+		const data = await response.json();
+		const countries = data.map((item) => item.country);
+		const filter: string[] = ['in', 'iso_3166_1_alpha_3', ...countries];
+		map.setFilter('country-boundaries', filter);
+		return filter;
 	}
 </script>
 
