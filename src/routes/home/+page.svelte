@@ -7,6 +7,7 @@
 	import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 	import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
+	export let data: PageData;
 	let map: mapboxgl.Map;
 
 	onMount(async () => {
@@ -61,8 +62,6 @@
 		getPoints();
 	});
 
-	export let data: PageData;
-
 	async function savePoint(longitude: number, latitude: number) {
 		await fetch('api/points', {
 			method: 'POST',
@@ -95,10 +94,12 @@
 				marker.getElement().addEventListener('click', () => {
 					popup.on('open', () => {
 						const deleteButton = document.getElementById(`delete-marker-${i}`);
-						deleteButton.addEventListener('click', () => {
-							removePoint(value[i].longitude, value[i].latitude);
-							marker.remove()
-						});
+						if (deleteButton != null) {
+							deleteButton.addEventListener('click', () => {
+								removePoint(value[i].longitude, value[i].latitude);
+								marker.remove();
+							});
+						}
 					});
 				});
 
@@ -135,9 +136,9 @@
 		<article class="prose text-center">
 			<h1>You are not logged in</h1>
 			<form action="/login">
-				<button type="submit" class="btn btn-primary bg-indigo-500 hover:bg-indigo-400"
-					>Login</button
-				>
+				<button type="submit" class="btn btn-primary bg-indigo-500 hover:bg-indigo-400">
+					Login
+				</button>
 			</form>
 		</article>
 	</div>

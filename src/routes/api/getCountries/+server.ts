@@ -7,6 +7,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         throw error(401, { message: 'You are not logged in' })
     }
 
-    const { data, error: err } = await supabase.from('countries').select('country').eq('user_id', cookies.get('sessionId'))
-    return new Response(JSON.stringify(data), { status: 200 })
+    const { data, error: err } = await supabase.from('countries').select('country').eq('user_id', cookies.get('sessionId'));
+
+    return new Response(JSON.stringify(data), { status: 200 });
 }
