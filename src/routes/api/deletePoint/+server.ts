@@ -10,8 +10,6 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
     const { longitude, latitude } = await request.json();
 
     const { error: err } = await supabase.from('points').delete().match({user_id: cookies.get('sessionId'), longitude: longitude, latitude: latitude})
-    
-    console.log(err)
 
     redirect(303, "/home")
 }

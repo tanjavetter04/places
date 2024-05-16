@@ -8,7 +8,6 @@
 	import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 	let map: mapboxgl.Map;
-	var filter: string[] = ['in', 'iso_3166_1_alpha_3'];
 
 	onMount(async () => {
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
@@ -87,7 +86,7 @@
 				const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
 					<div>
 						<p>Koordinaten: ${value[i].longitude}, ${value[i].latitude}</p>
-						<button id="delete-marker-${i}">Löschen</button>
+						<button id="delete-marker-${i}" class="btn btn-primary">Löschen</button>
 					</div>
 				`);
 
@@ -98,7 +97,7 @@
 						const deleteButton = document.getElementById(`delete-marker-${i}`);
 						deleteButton.addEventListener('click', () => {
 							removePoint(value[i].longitude, value[i].latitude);
-							console.log("hello")
+							marker.remove()
 						});
 					});
 				});
@@ -109,7 +108,7 @@
 	}
 
 	async function removePoint(longitude: number, latitude: number) {
-		const response = await fetch('api/deletePoint', {
+		await fetch('api/deletePoint', {
 			method: 'DELETE',
 			body: JSON.stringify({ longitude, latitude })
 		});
@@ -125,7 +124,6 @@
 		const countries = data.map((item) => item.country);
 		const filter: string[] = ['in', 'iso_3166_1_alpha_3', ...countries];
 		map.setFilter('country-boundaries', filter);
-		console.log(filter)
 		return filter;
 	}
 </script>
