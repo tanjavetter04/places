@@ -68,7 +68,6 @@
 			body: JSON.stringify({ longitude, latitude })
 		});
 		getPoints();
-		showCountries();
 	}
 
 	async function getPoints() {
@@ -106,15 +105,19 @@
 				markers.push(marker);
 			}
 		});
+		showCountries();
 	}
 
 	async function removePoint(longitude: number, latitude: number) {
-		await fetch('api/deletePoint', {
+		await fetch('api/points', {
 			method: 'DELETE',
 			body: JSON.stringify({ longitude, latitude })
 		});
 		getPoints();
-		showCountries();
+	}
+
+	async function removeCountry() {
+
 	}
 
 	async function showCountries() {
