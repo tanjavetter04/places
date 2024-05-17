@@ -8,8 +8,6 @@ export const POST: RequestHandler = async ({ locals, request }) => {
         password: formData.password as string,
     });
 
-
-    console.log(err)
     if (err) {
         throw error(500, { message: err.code || 'Something went wrong setting your new password. Try again' });
     }

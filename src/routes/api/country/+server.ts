@@ -1,36 +1,36 @@
-import { redirect, error } from "@sveltejs/kit"
+import { error } from "@sveltejs/kit"
 import type { RequestHandler } from "./$types"
 import { supabase } from "$lib/supabaseClient"
 
-export const GET: RequestHandler = async ({ cookies }) => {
-    if (cookies.get('sessionId') == undefined) {
-        throw error(401, { message: 'You are not logged in' })
-    }
+export const GET: RequestHandler = async ({ cookies, url }) => {
+    let country = url.searchParams.get('country');
+    let user_id = url.searchParams.get('user_id');
 
-    const { data, error: err } = await supabase.from('countries').select('country').eq('user_id', cookies.get('sessionId'));
+    const { data, error: err } = await supabase.from('countries').select('point_count').match({ user_id: user_id, country: country });
+
+    return new Response(JSON.stringify(data), { status: 200 });
+}
+
+export const PUT: RequestHandler = async ({ request }) => {
+    const { country, newPoint_count, user_id } = await request.json();
+
+    const { data, error: err } = await supabase.from('countries').update({ point_count: newPoint_count }).match({ user_id: user_id, country: country });
 
     return new Response(JSON.stringify(data), { status: 200 });
 }
 
 export const DELETE: RequestHandler = async ({ request, cookies }) => {
-    if (cookies.get('sessionId') == undefined) {
-        throw error(401, { message: 'You are not logged in' });
-    }
-
-    const { longitude, latitude } = await request.json();
-
-    let url = new URL('http://localhost:5173/api/reverseCountry');
-    url.searchParams.append('longitude', longitude);
-    url.searchParams.append('latitude', latitude);
-
-    const response = await fetch(url, {
-        method: 'GET',
-    });
-
-    response.json().then(async function (country) {
-        const { error:err } = await supabase.from('countries').delete().match({ user_id: cookies.get('sessionId'), country: country });
-    });
-
+    const { country, user_id } = await request.json();
     
-    redirect(303, "/home");
+    const { data, error: err } = await supabase.from('countries').delete().match({ user_id: user_id, country: country });
+
+    return new Response(JSON.stringify(data), { status: 200 });
+}
+
+export const POST: RequestHandler = async ({ request, cookies }) => {
+    const { country, user_id } = await request.json();
+    
+    const { data, error: err } = await supabase.from('countries').insert({ user_id: user_id, country: country, point_count: 1 });
+
+    return new Response(JSON.stringify(data), { status: 200 });
 }

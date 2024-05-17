@@ -96,6 +96,7 @@
 						if (deleteButton != null) {
 							deleteButton.addEventListener('click', () => {
 								marker.remove();
+								showPoints();
 								removePoint(value[i].longitude, value[i].latitude);
 							});
 						}
@@ -108,8 +109,16 @@
 		showCountries();
 	}
 
+	async function removePoint(longitude: number, latitude: number) {
+		await fetch('api/points', {
+			method: 'DELETE',
+			body: JSON.stringify({ longitude, latitude })
+		});
+		mapReload();
+	}
+
 	async function showCountries() {
-		const response = await fetch('api/country', {
+		const response = await fetch('api/countries', {
 			method: 'GET'
 		});
 		const data = await response.json();
@@ -117,22 +126,6 @@
 		const filter: string[] = ['in', 'iso_3166_1_alpha_3', ...countries];
 		map.setFilter('country-boundaries', filter);
 		return filter;
-	}
-
-	async function removePoint(longitude: number, latitude: number) {
-		await fetch('api/points', {
-			method: 'DELETE',
-			body: JSON.stringify({ longitude, latitude })
-		});
-		removeCountry(longitude, latitude);
-	}
-
-	async function removeCountry(longitude: number, latitude: number) {
-		await fetch('api/country', {
-			method: 'DELETE',
-			body: JSON.stringify({ longitude, latitude })
-		});
-		mapReload();
 	}
 
 	function mapReload() {
