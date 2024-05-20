@@ -9,6 +9,7 @@
 
 	export let data: PageData;
 	let map: mapboxgl.Map;
+	let markers = [];
 
 	onMount(async () => {
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
@@ -71,26 +72,25 @@
 	}
 
 	async function showPoints() {
-		var markers = [];
+		markers = [];
 		const response = await fetch('api/points', {
 			method: 'GET'
 		});
 		response.json().then(function (value) {
 			for (let i = 0; i < value.length; i++) {
-				let marker = new mapboxgl.Marker()
+				const marker = new mapboxgl.Marker()
 					.setLngLat([value[i].longitude, value[i].latitude])
 					.addTo(map);
 
-				const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+				/*const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
 					<div>
 						<p>Koordinaten: ${value[i].longitude}, ${value[i].latitude}</p>
-						<button id="delete-marker-${i}" class="btn btn-primary">Löschen</button>
 					</div>
 				`);
 
-				marker.setPopup(popup);
+				marker.setPopup(popup);*/
 
-				marker.getElement().addEventListener('click', () => {
+				/*marker.getElement().addEventListener('click', () => {
 					popup.on('open', () => {
 						const deleteButton = document.getElementById(`delete-marker-${i}`);
 						if (deleteButton != null) {
@@ -101,9 +101,16 @@
 							});
 						}
 					});
-				});
+				});*/
 
-				markers.push(marker);
+				getPlaceName(value[i].longitude, value[i].latitude)
+					.then((place) => {
+						markers = [...markers, { marker: marker, id: i, place: place }];
+					})
+					.catch((error) => {
+						markers = [...markers, { marker: marker, id: i, place: 'Error' }];
+						console.error('Error fetching the place:', error);
+					});
 			}
 		});
 		showCountries();
@@ -114,6 +121,11 @@
 			method: 'DELETE',
 			body: JSON.stringify({ longitude, latitude })
 		});
+		markers.forEach((m, index) => { 
+			console.log(`Removing marker ${index} at ${m.place}`);
+			m.marker.remove();
+		})
+		markers = [];
 		mapReload();
 	}
 
@@ -132,10 +144,31 @@
 		showPoints();
 		showCountries();
 	}
+
+	async function getPlaceName(longitude: string, latitude: string) {
+		let url = new URL('http://localhost:5173/api/reverseCountry');
+		url.searchParams.append('longitude', longitude);
+		url.searchParams.append('latitude', latitude);
+
+		const response = await fetch(url, {
+			method: 'GET'
+		});
+
+		const value = await response.json();
+		console.log(value.place);
+		return value.place;
+	}
 </script>
 
 {#if data.session}
 	<div id="map" />
+	<ul>
+		{#each markers as m, index}
+			<li class="w-1/5">{m.marker._lngLat}</li>
+			<li class="w-1/5">{m.place}</li>
+			<button class="btn btn-primary bg-indigo-500 hover:bg-indigo-400" on:click={() => removePoint(m.marker._lngLat.lng, m.marker._lngLat.lat)}>Löschen</button>
+		{/each}
+	</ul>
 {:else}
 	<div class="flex justify-center items-center h-screen">
 		<article class="prose text-center">
@@ -153,7 +186,8 @@
 	#map {
 		position: fixed;
 		top: 50;
-		width: 100%;
+		width: 80%;
 		height: 100%;
+		right: 0;
 	}
 </style>

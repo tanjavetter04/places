@@ -23,7 +23,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         method: 'GET',
     });
 
-    response.json().then(async function (country) {
+    response.json().then(async function (value) {
+        let country = value.country;
         let countryUrl = new URL('http://localhost:5173/api/country');
         countryUrl.searchParams.append('country', country);
         countryUrl.searchParams.append('user_id', user_id!!)
@@ -88,7 +89,8 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
         method: 'GET',
     });
 
-    response.json().then(async function (country) {
+    response.json().then(async function (value) {
+        let country = value.country;
         let countryUrl = new URL('http://localhost:5173/api/country');
         countryUrl.searchParams.append('country', country);
         countryUrl.searchParams.append('user_id', user_id!!);
