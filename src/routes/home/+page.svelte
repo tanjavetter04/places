@@ -99,8 +99,10 @@
 
 			const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
 					<div>
-						<p>Koordinaten: ${value[i].longitude}, ${value[i].latitude}, ${place}</p>
-						<button id="delete-marker-${i}" class="btn btn-primary">Löschen</button>
+						<p class="font-sans text-lg font-bold dark:text-black">${place}</p>
+						<p class="font-bold dark:text-black">Koordinaten:</p>
+						<p class="dark:text-black"> ${value[i].longitude}, ${value[i].latitude}</p>
+						<button id="delete-marker-${i}" class="text-neutral-100 dark:text-black mt-2 btn btn-sm btn-primary">Löschen</button>
 					</div>
 				`);
 
@@ -133,7 +135,7 @@
 			method: 'GET'
 		});
 		const data = await response.json();
-		
+
 		const countries = data.map((item) => item.country);
 		const filter: string[] = ['in', 'iso_3166_1_alpha_3', ...countries];
 		map.setFilter('country-boundaries', filter);
