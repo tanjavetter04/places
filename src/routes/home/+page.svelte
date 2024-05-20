@@ -12,6 +12,95 @@
 	let markers = [];
 
 	onMount(async () => {
+		initializeMap();
+	});
+
+	async function savePoint(longitude: number, latitude: number) {
+		await fetch('api/points', {
+			method: 'POST',
+			body: JSON.stringify({ longitude, latitude })
+		});
+		showPoints();
+	}
+
+	async function showPoints() {
+		markers = [];
+		const response = await fetch('api/points', {
+			method: 'GET'
+		});
+		response.json().then(async function (value) {
+			for (let i = 0; i < value.length; i++) {
+				const marker = new mapboxgl.Marker()
+					.setLngLat([value[i].longitude, value[i].latitude])
+					.addTo(map);
+
+				const place = await getPlaceName(value[i].longitude, value[i].latitude);
+
+				const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+					<div>
+						<p>Koordinaten: ${value[i].longitude}, ${value[i].latitude}, ${place}</p>
+						<button id="delete-marker-${i}" class="btn btn-primary">Löschen</button>
+					</div>
+				`);
+
+				marker.setPopup(popup);
+
+				marker.getElement().addEventListener('click', () => {
+					popup.on('open', () => {
+						const deleteButton = document.getElementById(`delete-marker-${i}`);
+						if (deleteButton != null) {
+							deleteButton.addEventListener('click', () => {
+								removePoint(value[i].longitude, value[i].latitude);
+							});
+						}
+					});
+				});
+
+				getPlaceName(value[i].longitude, value[i].latitude)
+					.then((place) => {
+						markers = [...markers, { marker: marker, id: i, place: place }];
+					})
+					.catch((error) => {
+						markers = [...markers, { marker: marker, id: i, place: 'Error' }];
+						console.error('Error fetching the place:', error);
+					});
+			}
+		});
+		showCountries();
+	}
+
+	async function removePoint(longitude: number, latitude: number) {
+		await fetch('api/points', {
+			method: 'DELETE',
+			body: JSON.stringify({ longitude, latitude })
+		});
+		markers.forEach((m, index) => {
+			console.log(`Removing marker ${index} at ${m.place}`);
+			m.marker.remove();
+		});
+		markers = [];
+		mapReload();
+	}
+
+	async function showCountries() {
+		const response = await fetch('api/countries', {
+			method: 'GET'
+		});
+		const data = await response.json();
+		const countries = data.map((item) => item.country);
+		const filter: string[] = ['in', 'iso_3166_1_alpha_3', ...countries];
+		map.setFilter('country-boundaries', filter);
+		return filter;
+	}
+
+	function mapReload() {
+		if (map) {
+			map.remove();
+		}
+		initializeMap();
+	}
+
+	function initializeMap() {
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
 
 		map = new mapboxgl.Map({
@@ -61,88 +150,6 @@
 		});
 
 		showPoints();
-	});
-
-	async function savePoint(longitude: number, latitude: number) {
-		await fetch('api/points', {
-			method: 'POST',
-			body: JSON.stringify({ longitude, latitude })
-		});
-		mapReload();
-	}
-
-	async function showPoints() {
-		markers = [];
-		const response = await fetch('api/points', {
-			method: 'GET'
-		});
-		response.json().then(function (value) {
-			for (let i = 0; i < value.length; i++) {
-				const marker = new mapboxgl.Marker()
-					.setLngLat([value[i].longitude, value[i].latitude])
-					.addTo(map);
-
-				/*const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-					<div>
-						<p>Koordinaten: ${value[i].longitude}, ${value[i].latitude}</p>
-					</div>
-				`);
-
-				marker.setPopup(popup);*/
-
-				/*marker.getElement().addEventListener('click', () => {
-					popup.on('open', () => {
-						const deleteButton = document.getElementById(`delete-marker-${i}`);
-						if (deleteButton != null) {
-							deleteButton.addEventListener('click', () => {
-								marker.remove();
-								showPoints();
-								removePoint(value[i].longitude, value[i].latitude);
-							});
-						}
-					});
-				});*/
-
-				getPlaceName(value[i].longitude, value[i].latitude)
-					.then((place) => {
-						markers = [...markers, { marker: marker, id: i, place: place }];
-					})
-					.catch((error) => {
-						markers = [...markers, { marker: marker, id: i, place: 'Error' }];
-						console.error('Error fetching the place:', error);
-					});
-			}
-		});
-		showCountries();
-	}
-
-	async function removePoint(longitude: number, latitude: number) {
-		await fetch('api/points', {
-			method: 'DELETE',
-			body: JSON.stringify({ longitude, latitude })
-		});
-		markers.forEach((m, index) => { 
-			console.log(`Removing marker ${index} at ${m.place}`);
-			m.marker.remove();
-		})
-		markers = [];
-		mapReload();
-	}
-
-	async function showCountries() {
-		const response = await fetch('api/countries', {
-			method: 'GET'
-		});
-		const data = await response.json();
-		const countries = data.map((item) => item.country);
-		const filter: string[] = ['in', 'iso_3166_1_alpha_3', ...countries];
-		map.setFilter('country-boundaries', filter);
-		return filter;
-	}
-
-	function mapReload() {
-		showPoints();
-		showCountries();
 	}
 
 	async function getPlaceName(longitude: string, latitude: string) {
@@ -162,13 +169,6 @@
 
 {#if data.session}
 	<div id="map" />
-	<ul>
-		{#each markers as m, index}
-			<li class="w-1/5">{m.marker._lngLat}</li>
-			<li class="w-1/5">{m.place}</li>
-			<button class="btn btn-primary bg-indigo-500 hover:bg-indigo-400" on:click={() => removePoint(m.marker._lngLat.lng, m.marker._lngLat.lat)}>Löschen</button>
-		{/each}
-	</ul>
 {:else}
 	<div class="flex justify-center items-center h-screen">
 		<article class="prose text-center">
@@ -186,8 +186,7 @@
 	#map {
 		position: fixed;
 		top: 50;
-		width: 80%;
+		width: 100%;
 		height: 100%;
-		right: 0;
 	}
 </style>
