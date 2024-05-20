@@ -3,12 +3,10 @@ import type { RequestHandler } from "./$types"
 import { supabase } from "$lib/supabaseClient"
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-    let user_id: string | undefined;
+    const user_id = cookies.get('sessionId');
 
-    if (cookies.get('sessionId') == undefined) {
+    if (!user_id) {
         throw error(401, { message: 'You are not logged in' });
-    } else {
-        user_id = cookies.get('sessionId');
     }
     
     const { longitude, latitude } = await request.json();
@@ -59,22 +57,26 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 }
 
 export const GET: RequestHandler = async ({ cookies }) => {
-    if (cookies.get('sessionId') == undefined) {
+    const user_id = cookies.get('sessionId');
+
+    if (!user_id) {
         throw error(401, { message: 'You are not logged in' });
     }
 
-    const { data, error: err } = await supabase.from('points').select('longitude, latitude').eq('user_id', cookies.get('sessionId'));
+    const { data, error: err } = await supabase.from('points').select('longitude, latitude').eq('user_id', user_id);
+
+    if (err) {
+        throw error(500, { message: 'Database query failed' + err.message });
+    }
 
     return new Response(JSON.stringify(data), { status: 200 });
 }
 
 export const DELETE: RequestHandler = async ({ request, cookies }) => {
-    let user_id: string | undefined;
+    const user_id = cookies.get('sessionId');
 
-    if (cookies.get('sessionId') == undefined) {
+    if (!user_id) {
         throw error(401, { message: 'You are not logged in' });
-    } else {
-        user_id = cookies.get('sessionId');
     }
 
     const { longitude, latitude } = await request.json();

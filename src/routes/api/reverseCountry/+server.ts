@@ -6,28 +6,32 @@ export const GET: RequestHandler = async ({ url }) => {
     let longitude = url.searchParams.get('longitude');
     let latitude = url.searchParams.get('latitude');
 
-    let country = null;
-    let place = null;
-
-    if (longitude != null && latitude != null) {
-        let url = new URL('https://api.mapbox.com/search/geocode/v6/reverse');
-        url.searchParams.append('longitude', longitude);
-        url.searchParams.append('latitude', latitude);
-        url.searchParams.append('access_token', PUBLIC_MAPBOX_TOKEN);
-
-        const response = await fetch(url, {
-            method: 'GET'
-        });
-
-        await response.json().then(function (value) {
-            country = value.features[0].properties.context.country.country_code_alpha_3;
-            place = value.features[0].properties.context.place.name;
-        });
+    if (!longitude || !latitude) {
+        throw error(400, { message: 'Missing parameters' });
     }
 
-    if (country == null || place == null) {
-        throw error(500, { message: 'Something went wrong getting the country or place. Try again' });
+    const response = await fetchMapboxData(longitude, latitude);
+
+    const value = await response.json();
+    const country = value.features[0].properties.context.country.country_code_alpha_3;
+    const place = value.features[0].properties.context.place.name;
+
+    if (!country || !place) {
+        throw error(500, { message: 'Something went wrong getting the country or place.' });
     }
 
     return new Response(JSON.stringify({ country: country, place: place }), { status: 200 });
+}
+
+async function fetchMapboxData(longitude: string, latitude: string) {
+    let searchUrl = new URL('https://api.mapbox.com/search/geocode/v6/reverse');
+    searchUrl.searchParams.append('longitude', longitude);
+    searchUrl.searchParams.append('latitude', latitude);
+    searchUrl.searchParams.append('access_token', PUBLIC_MAPBOX_TOKEN);
+
+    const response = await fetch(searchUrl, {
+        method: 'GET'
+    });
+
+    return response;
 }

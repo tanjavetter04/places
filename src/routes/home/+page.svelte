@@ -12,10 +12,10 @@
 	let markers = [];
 
 	onMount(async () => {
-		initializeMap();
+		await initializeMap();
 	});
 
-	function initializeMap() {
+	async function initializeMap() {
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
 
 		map = new mapboxgl.Map({
@@ -33,7 +33,7 @@
 
 		map.addControl(geocoder);
 
-		map.on('load', function () {
+		map.on('load', async function () {
 			map.addLayer(
 				{
 					id: 'country-boundaries',
@@ -51,13 +51,8 @@
 				'country-label'
 			);
 
-			showCountries()
-				.then((filter) => {
-					map.setFilter('country-boundaries', filter);
-				})
-				.catch((error) => {
-					console.error('Error fetching the countries:', error);
-				});
+			const filter = await showCountries();
+			map.setFilter('country-boundaries', filter);
 		});
 
 		geocoder.on('result', function (e) {
@@ -93,35 +88,35 @@
 		const response = await fetch('api/points', {
 			method: 'GET'
 		});
-		response.json().then(async function (value) {
-			for (let i = 0; i < value.length; i++) {
-				const marker = new mapboxgl.Marker()
-					.setLngLat([value[i].longitude, value[i].latitude])
-					.addTo(map);
+		const value = await response.json();
 
-				const place = await getPlaceName(value[i].longitude, value[i].latitude);
+		for (let i = 0; i < value.length; i++) {
+			const marker = new mapboxgl.Marker()
+				.setLngLat([value[i].longitude, value[i].latitude])
+				.addTo(map);
 
-				const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+			const place = await getPlaceName(value[i].longitude, value[i].latitude);
+
+			const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
 					<div>
 						<p>Koordinaten: ${value[i].longitude}, ${value[i].latitude}, ${place}</p>
 						<button id="delete-marker-${i}" class="btn btn-primary">Löschen</button>
 					</div>
 				`);
 
-				marker.setPopup(popup);
+			marker.setPopup(popup);
 
-				marker.getElement().addEventListener('click', () => {
-					popup.on('open', () => {
-						const deleteButton = document.getElementById(`delete-marker-${i}`);
-						if (deleteButton != null) {
-							deleteButton.addEventListener('click', () => {
-								removePoint(value[i].longitude, value[i].latitude);
-							});
-						}
-					});
+			marker.getElement().addEventListener('click', () => {
+				popup.on('open', () => {
+					const deleteButton = document.getElementById(`delete-marker-${i}`);
+					if (deleteButton != null) {
+						deleteButton.addEventListener('click', () => {
+							removePoint(value[i].longitude, value[i].latitude);
+						});
+					}
 				});
-			}
-		});
+			});
+		}
 		showCountries();
 	}
 
@@ -138,6 +133,7 @@
 			method: 'GET'
 		});
 		const data = await response.json();
+		
 		const countries = data.map((item) => item.country);
 		const filter: string[] = ['in', 'iso_3166_1_alpha_3', ...countries];
 		map.setFilter('country-boundaries', filter);

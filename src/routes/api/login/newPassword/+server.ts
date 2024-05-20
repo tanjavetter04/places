@@ -4,12 +4,12 @@ import type { RequestHandler } from "./$types"
 export const POST: RequestHandler = async ({ locals, request }) => {
     const formData = Object.fromEntries(await request.formData());
 
-    const { data, error: err } = await locals.supabase.auth.updateUser({
+    const { error: err } = await locals.supabase.auth.updateUser({
         password: formData.password as string,
     });
 
     if (err) {
-        throw error(500, { message: err.code || 'Something went wrong setting your new password. Try again' });
+        throw error(500, { message: 'Something went wrong setting your new password.' + err.message });
     }
 
     redirect(303, "/login");

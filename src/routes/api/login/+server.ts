@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ locals, request, cookies }) => {
   });
 
   if (err) {
-    throw error(500, { message: 'Something went wrong logging you in. Try again' });
+    throw error(500, { message: 'Something went wrong logging you in.' + err.message });
   }
 
   cookies.set('sessionId', data.session.user.id, {

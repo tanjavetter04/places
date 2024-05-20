@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ locals, request, cookies }) => {
     });
 
     if (err) {
-        throw error(500, { message: 'Something went wrong registering you. Try again' });
+        throw error(500, { message: 'Something went wrong registering you.' + err.message });
     }
 
     if (data.session != null) {
