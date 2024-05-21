@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
-	import { get } from 'svelte/store';
 
 	export let data: PageData;
     let progress = '0';
@@ -30,10 +29,6 @@
         places = data.length;
     }
 </script>
-
-<svelte:head>
-	<title>Places</title>
-</svelte:head>
 
 {#if data.session}
 	<div class="flex flex-col justify-center items-center h-screen">
