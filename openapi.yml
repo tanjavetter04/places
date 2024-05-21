@@ -1,0 +1,380 @@
+openapi: 3.0.3
+info:
+  title: Places
+  version: 1.0.0
+paths:
+  /countries:
+    get:
+      summary: Retrieve countries for a user
+      tags:
+        - Countries
+      parameters:
+        - name: sessionId
+          in: cookie
+          required: true
+          schema:
+            type: string
+            example: c0f4f02d-2772-4b9c-aea1-4a737e023b65
+          description: The session ID of the logged-in user
+      responses:
+        '200':
+          description: Successful response with a list of countries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: ["DEU", "FRA", "GBR"]
+        '401':
+          description: Unauthorized - User is not logged in
+        '500':
+          description: Internal Server Error - Database query failed
+          
+  /country:
+    get:
+      summary: Retrieve point count for a country and user
+      tags:
+        - Country
+      parameters:
+        - name: country
+          in: query
+          required: true
+          schema:
+            type: string
+            example: DEU
+          description: The name of the country
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: c0f4f02d-2772-4b9c-aea1-4a737e023b65
+          description: The session ID of the logged-in user
+      responses:
+        '200':
+          description: Successful response with the point count for the country and user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  point_count:
+                    type: integer
+                    example: 5
+        '400':
+          description: Bad Request - Missing parameters
+        '500':
+          description: Internal Server Error - Database query failed
+    put:
+      summary: Update point count for a country and user
+      tags:
+        - Country
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country:
+                  type: string
+                  example: DEU
+                newPoint_count:
+                  type: integer
+                  example: 5
+                user_id:
+                  type: string
+                  example: c0f4f02d-2772-4b9c-aea1-4a737e023b65
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request - Missing parameters
+        '500':
+          description: Internal Server Error - Database query failed
+    delete:
+      summary: Delete country data for a user
+      tags:
+        - Country
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country:
+                  type: string
+                  example: DEU
+                user_id:
+                  type: string
+                  example: c0f4f02d-2772-4b9c-aea1-4a737e023b65
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request - Missing parameters
+        '500':
+          description: Internal Server Error - Database delete failed
+    post:
+      summary: Add country data for a user
+      operationId: addCountryData
+      tags:
+        - Country
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country:
+                  type: string
+                  example: DEU
+                user_id:
+                  type: string
+                  example: c0f4f02d-2772-4b9c-aea1-4a737e023b65
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request - Missing parameters
+        '500':
+          description: Internal Server Error - Database insert failed
+          
+  /reverseCountry:
+    get:
+      summary: Retrieve country and place by coordinates
+      tags:
+        - Reverse Country
+      parameters:
+        - name: longitude
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 6.9601622
+          description: The longitude coordinate
+        - name: latitude
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 50.93804
+          description: The latitude coordinate
+      responses:
+        '200':
+          description: Successful response with the country and place
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  country:
+                    type: string
+                    example: DEU
+                  place:
+                    type: string
+                    example: Berlin
+        '400':
+          description: Bad Request - Missing parameters
+        '500':
+          description: Internal Server Error - Failed to retrieve country or place
+  /logout:
+    post:
+      summary: Log out a user
+      tags: 
+        - Logout
+      responses:
+        '303':
+          description: Successful response indicating redirection after logout
+        '500':
+          description: Internal Server Error - Failed to log out
+  /login:
+    post:
+      summary: Log in a user
+      operationId: loginUser
+      tags:
+        - Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+      responses:
+        '303':
+          description: Successful response indicating redirection after login
+        '500':
+          description: Internal Server Error - Failed to log in
+  /login/newPassword:
+    post:
+      summary: User can enter new password
+      tags:
+        - Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  format: password
+                  example: "newpassword123"
+      responses:
+        '303':
+          description: Successful response indicating redirection after password update
+        '500':
+          description: Internal Server Error - Failed to update password
+  /login/passwordReset:
+    post:
+      summary: User can request to reset password
+      tags:
+        - Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+      responses:
+        '303':
+          description: Successful response indicating redirection after password reset
+        '500':
+          description: Internal Server Error - Failed to reset password
+  /login/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+      responses:
+        '303':
+          description: Successful response indicating redirection after registration
+        '500':
+          description: Internal Server Error - Failed to register user
+          
+  /points:
+    post:
+      summary: Add point and update country data for a user
+      tags:
+        - Points
+      parameters:
+        - name: sessionId
+          in: cookie
+          required: true
+          schema:
+            type: string
+            example: c0f4f02d-2772-4b9c-aea1-4a737e023b65
+          description: The session ID of the logged-in user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                longitude:
+                  type: number
+                  example: 6.9601622
+                latitude:
+                  type: number
+                  example: 50.93804
+      responses:
+        '401':
+          description: Unauthorized - User is not logged in
+        '303':
+          description: Successful response indicating redirection after adding point and updating country data
+    get:
+      summary: Get user points
+      tags:
+        - Points
+      parameters:
+        - name: sessionId
+          in: cookie
+          required: true
+          schema:
+            type: string
+            example: c0f4f02d-2772-4b9c-aea1-4a737e023b65
+          description: The session ID of the logged-in user
+      responses:
+        '401':
+          description: Unauthorized - User is not logged in
+        '200':
+          description: Successful response with user points
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    longitude:
+                      type: number
+                      example: 6.9601622
+                    latitude:
+                      type: number
+                      example: 50.93804
+        '500':
+          description: Internal Server Error - Database query failed
+    delete:
+      summary: Delete point and update country data for a user
+      tags:
+        - Points
+      parameters:
+        - name: sessionId
+          in: cookie
+          required: true
+          schema:
+            type: string
+            example: c0f4f02d-2772-4b9c-aea1-4a737e023b65
+          description: The session ID of the logged-in user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                longitude:
+                  type: number
+                  example: 6.9601622
+                latitude:
+                  type: number
+                  example: 50.93804
+      responses:
+        '401':
+          description: Unauthorized - User is not logged in
+        '303':
+          description: Successful response indicating redirection after adding point and updating country data
