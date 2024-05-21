@@ -33,7 +33,7 @@
 {#if data.session}
 	<div class="flex flex-col justify-center items-center h-screen">
 		<div class="radial-progress" style="--value:{progress}; --size:12rem; --thickness: 1rem;" role="progressbar">{progress}% of the 193<span class="line-break"></span>UN-countries</div>
-        <div class="font-sans text-lg font-bold pt-10">You have been to {places} Places in {countries} different countries</div>
+        <div class="font-sans text-lg font-bold pt-10">You have been to {places} places in {countries} different countries</div>
 	</div>
 {:else}
 	<div class="flex justify-center items-center h-screen">
