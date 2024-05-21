@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         throw error(401, { message: 'You are not logged in' })
     }
 
-    const { data, error: err } = await supabase.from('countries').select('country').eq('user_id', cookies.get('sessionId'));
+    const { data, error: err } = await supabase.from('countries').select('country').eq('user_id', sessionId);
 
     if (err) {
         throw error(500, { message: 'Database query failed' + err.message });

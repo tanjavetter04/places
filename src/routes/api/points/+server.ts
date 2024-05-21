@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         countryResponse.json().then(async function (point_count) {
             if (point_count.length != 0) {
                 let newPoint_count = point_count[0].point_count + 1;
-                const putResponse = await fetch('http://localhost:5173/api/country', {
+                await fetch('http://localhost:5173/api/country', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
                     body: JSON.stringify({ country, newPoint_count, user_id })
                 })
             } else {
-                const postResponse = await fetch('http://localhost:5173/api/country', {
+                await fetch('http://localhost:5173/api/country', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
         countryResponse.json().then(async function (point_count) {
             if (point_count[0].point_count > 1) {
                 let newPoint_count = point_count[0].point_count - 1;
-                const response = await fetch('http://localhost:5173/api/country', {
+                await fetch('http://localhost:5173/api/country', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
                     body: JSON.stringify({ country, newPoint_count, user_id })
                 })
             } else {
-                const response = await fetch('http://localhost:5173/api/country', {
+                await fetch('http://localhost:5173/api/country', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
