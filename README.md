@@ -7,6 +7,8 @@ Beim Aufruf der App sieht der Nutzer eine Seite, die die App kurz beschreibt. Au
 
 Klickt man auf diesen, wird man auf die *Login* Seite weitergeleitet. Diese erreicht man auch über den Button in der Navigationsleiste. Auf der Login Seite befindet sich ein Formular zu Eingabe der E-Mail - Adresse und des Passworts. Über einen Button kann man die Eingabe bestätigen und wird eingeloggt. Es erfolgt eine Weiterleitung auf die *Home Page* der App.
 
+![Login Seite](images/login.png)
+
 Sollte man noch keinen Account haben gibt es darunter einen Button *Sign up*. Dieser führt auf eine Seite, auf der man seine E-Mail - Adresse und ein Passwort eingeben kann um sich zu registrieren. Ist der Vorgang erfolgreich, wird man ebenfalls automatisch eingeloggt. 
 
 Hat man sein Passwort vergessen, kann man auf der Login Seite einen Link klicken, der zum *Password Reset* führt. Auf dieser Seite kann man in einem Formular eine E-Mail - Adresse eingeben. Bestätigt man die Eingabe über einen Button, erhält man eine E-Mail. Diese beinhaltet einen Link, der zu einer Seite führt, auf der man sein neues Passwort eingeben an.
@@ -16,7 +18,11 @@ Die Home Page wird vollständig von einer Weltkarte in Globusform eingenommen. I
 Zusätzlich zu dem gesetzten Marker wird das Land, in dem der Ort liegt, hellrot markiert. 
 Beim Löschen wird das Land auch wieder entfernt, wenn kein anderer Punkt in diesem Land mehr gespeichert ist. 
 
+![Home Seite](images/home.png)
+
 Des Weiteren gibt es eine Statistik Seite. Auf dieser befindet sich ein Kreisdiagramm, das anzeigt wie viel Prozent der 193 Länder, die offiziell von der UN anerkannt sind, bereits besucht wurden. Außerdem steht darunter ein Text, der anzeigt wie viele verschiedene Orte man in wie vielen verschiedenen Ländern man besucht hat.
+
+![Statistik Seite](images/stats.png)
 
 Der Logout Button meldet den Benutzer ab und leitet ihn auf die Startseite weiter.
 # Technologien
