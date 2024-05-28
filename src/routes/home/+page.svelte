@@ -63,7 +63,7 @@
 	}
 
 	async function getPlaceName(longitude: string, latitude: string) {
-		let url = new URL('https://places-iota.vercel.app/api/reverseCountry');
+		let url = new URL('https://places-ex5.pages.dev/api/reverseCountry');
 		url.searchParams.append('longitude', longitude);
 		url.searchParams.append('latitude', latitude);
 

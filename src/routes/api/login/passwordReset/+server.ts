@@ -5,7 +5,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
     const formData = Object.fromEntries(await request.formData());
 
     const { error: err } = await locals.supabase.auth.resetPasswordForEmail(formData.email as string, {
-        redirectTo: 'https://places-iota.vercel.app/login/newPassword',
+        redirectTo: 'https://places-ex5.pages.dev/login/newPassword',
     });
 
     if (err) {
