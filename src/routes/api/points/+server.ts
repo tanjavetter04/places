@@ -69,7 +69,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
 }
 
 async function reverseCountry(longitude: string, latitude: string) {
-    let url = new URL('http://localhost:5173/api/reverseCountry');
+    let url = new URL('https://places-iota.vercel.app/api/reverseCountry');
     url.searchParams.append('longitude', longitude);
     url.searchParams.append('latitude', latitude);
     const response = await fetch(url, {
@@ -79,7 +79,7 @@ async function reverseCountry(longitude: string, latitude: string) {
 }
 
 async function getCountry(country: string, user_id: string) {
-    const countryUrl = new URL('http://localhost:5173/api/country');
+    const countryUrl = new URL('https://places-iota.vercel.app/api/country');
     countryUrl.searchParams.append('country', country);
     countryUrl.searchParams.append('user_id', user_id!!)
 
@@ -91,7 +91,7 @@ async function getCountry(country: string, user_id: string) {
 }
 
 async function putCountry(country: string, newPoint_count: number, user_id: string) {
-    await fetch('http://localhost:5173/api/country', {
+    await fetch('https://places-iota.vercel.app/api/country', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ async function putCountry(country: string, newPoint_count: number, user_id: stri
 }
 
 async function postCountry(country: string, user_id: string) {
-    await fetch('http://localhost:5173/api/country', {
+    await fetch('https://places-iota.vercel.app/api/country', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ async function postCountry(country: string, user_id: string) {
 }
 
 async function deleteCountry(country: string, user_id: string) {
-    await fetch('http://localhost:5173/api/country', {
+    await fetch('https://places-iota.vercel.app/api/country', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
