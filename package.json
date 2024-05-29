@@ -35,7 +35,6 @@
 		"@mapbox/mapbox-gl-geocoder": "^5.0.2",
 		"@supabase/ssr": "^0.3.0",
 		"@supabase/supabase-js": "^2.43.0",
-		"@sveltejs/adapter-cloudflare": "^4.4.0",
 		"mapbox-gl": "^3.3.0"
 	}
 }
