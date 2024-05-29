@@ -63,7 +63,7 @@
 	}
 
 	async function getPlaceName(longitude: string, latitude: string) {
-		let url = new URL('https://places-ex5.pages.dev/api/reverseCountry');
+		let url = new URL('https://keen-kitsune-3298f4.netlify.app/api/reverseCountry');
 		url.searchParams.append('longitude', longitude);
 		url.searchParams.append('latitude', latitude);
 
