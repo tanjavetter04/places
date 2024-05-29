@@ -1,4 +1,14 @@
-# Places - Dokumentation
+<p align="center">
+<img src="images/places.png" width="150px" align="center" alt="logo" />
+  <h1 align="center">Places 🌍</h1>
+  <p align="center">visualize where you have been</p>
+</p>
+<div align="center">
+  <a align="center" style="font-size: 30px" href="https://keen-kitsune-3298f4.netlify.app/">Live-Demo</a>
+</div>
+<br/>
+
+# Dokumentation
 Die Web-App "Places" ermöglicht es zu visualisieren welche Länder und Orte man bereits besucht hat.
 # Funktionalitäten
 Die Web-App hat oben auf jeder Seite eine Navigationsleiste. Auf der rechten Seite befinden sich dort ein *Login* und ein *Logout* Button. Links ist mit *Places* ein Button, der auf die *Home Page* (oder auch Standard-Seite der App) verlinkt. Daneben findet sich der Button *Stats*. Dieser führt zu einer Seite mit Statistiken. 
@@ -41,14 +51,15 @@ Außerdem stellt Mapbox eine Reverse Geocoding API bereit. Diese ermöglicht es 
 Die beschriebenen Funktionalitäten werden mit den vorgestellten Technologien umgesetzt.
 ## Projektstruktur
 Der ```src``` Ordner des Projekts enthält den Unterordner ```lib```. In diesem befindet sich die Navigationsleiste, da diese als Komponente auf jeder Seite eingebunden wird.
-Außerdem wird dort in einer ```.js``` Datei die Supabase Instanz initialisiert, damit von überall darauf zugegriffen kann.
-Im Unterordner ```routes``` befindet sich die gesamte Anwendung. Jeder dort vorhandene Unterordner definiert mit seinem Namen eine URL-Route. In den Unterordner befindet sich entweder eine ```+page.svelte``` Datei oder eine ```+server.ts```. 
-Die ```.ts``` Dateien repräsentieren die API-Routen und befinden sich daher alle im Unterordner ```api```. Sie beinhalten Funktionen passend zu den HTTP Anfragen wie ```GET```, ```PUT``` oder ```DELETE```.
-```+page.svelte``` Dateien definieren jeweils eine Seite der App. Sie bestehen aus einem (optionalen) Script Teil (durch ```<script>``` gekennzeichnet), einem HTML-Teil und einem (optionalen) Style Bereich (durch ```<style>``` gekennzeichnet). Der HTML-Teil wird durch Bestandteile des Svelte-Frameworks erweitert. So lassen sich beispielsweise Verzweigungen realisieren.
+Außerdem wird dort in einer ```.js``` Datei die Supabase Instanz initialisiert, damit von überall darauf zugegriffen kann.\
+Im Unterordner ```routes``` befindet sich die gesamte Anwendung. Jeder dort vorhandene Unterordner definiert mit seinem Namen eine URL-Route. In den Unterordner befindet sich entweder eine ```+page.svelte``` Datei oder eine ```+server.ts```.\ 
+Die ```.ts``` Dateien repräsentieren die API-Routen und befinden sich daher alle im Unterordner ```api```. Sie beinhalten Funktionen passend zu den HTTP Anfragen wie ```GET```, ```PUT``` oder ```DELETE```.\
+```+page.svelte``` Dateien definieren jeweils eine Seite der App. Sie bestehen aus einem (optionalen) Script Teil (durch ```<script>``` gekennzeichnet), einem HTML-Teil und einem (optionalen) Style Bereich (durch ```<style>``` gekennzeichnet). Der HTML-Teil wird durch Bestandteile des Svelte-Frameworks erweitert. So lassen sich beispielsweise Verzweigungen realisieren.\
 Eine Besonderheit stellen die ```+layout``` Dateien dar. Sie definieren Bestandteile der App, die auf alle Seiten im gleichen Ordner und in allen Unterordnern davon angewendet werden. Beispielsweise muss die Navigationsleiste nur einmal in der ```+layout.svelte``` Datei hinzugefügt werden. Da diese direkt im ```routes``` Ordner liegt, haben alle anderen Seite auch automatisch die Navigationsleiste eingebunden, ohne dass diese jeweils explizit hinzugefügt werden muss.
 ## Datenbankstruktur
-Die Datenbank besteht aus zwei Tabellen: ```points``` und ```countries```. In ```points``` werden die Längen- und Breitengrade der besuchten Orte in Kombination mit der ```UserId``` gespeichert. Es gibt eine automatisch generierte ID. 
-In ```countries``` werden die Länder mit ihrer zugehörigen ```iso_3166_1_alpha_3``` Kennung (z. B. ```DEU``` für Deutschland in Kombination mit der ```UserId``` gespeichert. Außerdem gibt es eine Spalte ```point_count```. Dort wird gespeichert wie viele Punkte in diesem Land gespeichert sind. So wird garantiert, dass beim Löschen eines Punktes ein Land trotzdem gespeichert bleibt, wenn noch ein anderer Ort in dem gleichen Land markiert ist.
+Die Datenbank besteht aus zwei Tabellen: ```points``` und ```countries```.  
+In ```points``` werden die Längen- und Breitengrade der besuchten Orte in Kombination mit der ```UserId``` gespeichert. Es gibt eine automatisch generierte ID.  
+In ```countries``` werden die Länder mit ihrer zugehörigen ```iso_3166_1_alpha_3``` Kennung (z. B. ```DEU``` für Deutschland) in Kombination mit der ```UserId``` gespeichert. Außerdem gibt es eine Spalte ```point_count```. Dort wird gespeichert wie viele Punkte in diesem Land gespeichert sind. So wird garantiert, dass beim Löschen eines Punktes ein Land trotzdem gespeichert bleibt, wenn noch ein anderer Ort in dem gleichen Land markiert ist.
 ## API-Aufrufe
 Die Aufrufe der API erfolgen in der Regel aus den ```+page.svelte``` Dateien über folgenden Aufruf:
 ``` 
@@ -63,7 +74,9 @@ let url = new URL(url);
 url.searchParams.append('valueName', value);
 ```
 Bei den Formularen zum Einloggen wird die API direkt beim Absenden des Formulars aufgerufen:
-```<form  action="/api/login"  method="POST">```
+```
+<form  action="/api/login"  method="POST">
+```
 Die in die ```<input>``` Felder eingegebenen Werte werden als Body mitgegeben.
 
 Die Anfragen werden in den ```+server.ts``` Dateien bearbeitet. Für jede benötigte HTTP Methode existiert dort eine Funktion:
@@ -81,7 +94,9 @@ Bei ```GET``` Requests müssen die URL Parameter einzeln wieder abgefragt werden
 let parameter = url.searchParams.get('valueName');
 ```
 Des Weiteren können die Eingaben von Formularen mittels einem Befehl abgefragt werden:
-```const formData = Object.fromEntries(await request.formData());``` 
+```
+const formData = Object.fromEntries(await request.formData());
+``` 
 ## Authentifizierung
 Das Registrieren, An- und Abmelden sowie Passwort zurücksetzen werden mithilfe von Supabase umgesetzt. Die benötigten Informationen dafür werden vom Nutzer auf den Seiten ```/login```,  ```/register```, ```/passwordReset``` und ```/newPassword``` eingegeben. Da es sich dabei um Formulare handelt, werden die Daten direkt mittels ```POST``` Requests an die API geschickt. Supabase stellt für die Funktionalitäten bereits Methoden bereit, die nur noch mit den passenden Parametern aufgerufen werden müssen:
 ```
@@ -104,10 +119,10 @@ cookies.set('sessionId', data.session.user.id, {
 Bei allen Anfragen wird dann zuerst geprüft, ob eine ```SessionId``` in den Cookies vorhanden ist. Ist dies nicht der Fall wird die Anfrage verweigert.
 Meldet der Benutzer sich ab, wird die ```SessionId``` aus den Cookies entfernt:
 ```
-await  cookies.delete('sessionId', { path:  '/' });
+await cookies.delete('sessionId', { path: '/' });
 ```
 ## Karte
-Die Karte wird initialisiert, wenn die Seite das erste Mal geladen wird. Dies geschieht in der Funktion ```onMount()```, die zum Lifecycle von Svelte gehört. Dabei werden auch alle für den Nutzer in der Datenbank gespeicherten Punkte und Länder geladen. Wie das funktioniert wird im späteren Verlauf erläutert.
+Die Karte wird initialisiert, wenn die Seite das erste Mal geladen wird. Dies geschieht in der Funktion ```onMount()```, die zum Lifecycle von Svelte gehört. Dabei werden auch alle für den Nutzer in der Datenbank gespeicherten Punkte und Länder geladen. Wie das funktioniert wird im späteren Verlauf erläutert.  
 Um die Suchleiste der Karte hinzufügen, wird ein sogenannter ```Geocoder``` erstellt und der Karte hinzugefügt:
 ```
 const geocoder = new MapboxGeocoder({
@@ -125,10 +140,10 @@ geocoder.on('result', function (e) {
 	savePoint(e.result.center[0], e.result.center[1]);
 });
 ```
-Dabei wird die API Route ```api/points``` als ```POST``` Request aufgerufen.
+Dabei wird die API Route ```api/points``` als ```POST``` Request aufgerufen.  
 Dort wird zunächst der Punkt in der Datenbank gespeichert. Anschließend wird mithilfe der Reverse Geocoding API das zugehörige Land identifiziert. Dieses wird dann ebenfalls gespeichert. Vor der Speicherung muss allerdings anhand des Wertes der Spalte ```point_count``` identifiziert werden, ob das Land neu eingetragen werden muss (```POST```) oder geupdatet werden muss (```PUT```). Abhängig davon wird ```http://localhost:5173/api/country``` aufgerufen. Dort wird das Land mit dem passenden Wert von ```point_count``` gespeichert.
 ## Punkte anzeigen
-Die Funktion zum Anzeigen der Punkte wird immer beim Initialisieren der Karte und nach dem Hinzufügen eines Punktes aufgerufen. Wenn alle Punkte angezeigt sind, wird anschließend ```showCountries``` aufgerufen. Dort werden über die API Route ```api/countries``` alle Länder des Nutzers zurückgegeben und dem Filter für die Layer mit den Ländergrenzen hinzugefügt.
+Die Funktion zum Anzeigen der Punkte wird immer beim Initialisieren der Karte und nach dem Hinzufügen eines Punktes aufgerufen. Wenn alle Punkte angezeigt sind, wird anschließend ```showCountries``` aufgerufen. Dort werden über die API Route ```api/countries``` alle Länder des Nutzers zurückgegeben und dem Filter für die Layer mit den Ländergrenzen hinzugefügt.  
 Alle Punkt werden über ```api/points``` mit einem ```GET``` Request aus der Datenbank geholt. Für jeden Punkt wird ein Marker erstellt und der Karte hinzugefügt. Außerdem wird der Ortsname des Punktes über die Reverse Geocoding API identifiziert (```getPlaceName```). Dem Marker wird ein Popup hinzugefügt. Dieses zeigt den Ortsnamen und die Koordinaten an. Außerdem existiert ein Löschen - Button mit einem Click - Listener: 
 ```
 deleteButton.addEventListener('click', () => {
@@ -141,12 +156,12 @@ Das Popup selber wird ebenfalls durch Klicken des Markers geöffnet.
 Zum Löschen eines Punktes wird analog wie beim Hinzufügen vorgegangen. Statt den Punkt hinzuzufügen wird dieser gelöscht. Außerdem wird wieder das zugehörige Land identifiziert. Dieses wird abhängig vom ```point_count``` gelöscht oder geupdatet. 
 Anschließend wird die Karte neu geladen (siehe Probleme).
 ## Statistiken
-Es gibt zwei kleine Statistiken auf der entsprechenden Seite: ein Kreisdiagramm, dass den Anteil der besuchten Länder an den 193 UN-Ländern anzeigt und darunter eine Textzeile, die angibt, wie viele verschiedene Orte man in wie vielen Ländern schon besucht hat.
-Dafür wird die API ```api/countries``` aufgerufen. Die Länge des Ergebnisses kann durch 193 geteilt werden, um den Anteil zu identifizieren.
+Es gibt zwei kleine Statistiken auf der entsprechenden Seite: ein Kreisdiagramm, dass den Anteil der besuchten Länder an den 193 UN-Ländern anzeigt und darunter eine Textzeile, die angibt, wie viele verschiedene Orte man in wie vielen Ländern schon besucht hat.  
+Dafür wird die API ```api/countries``` aufgerufen. Die Länge des Ergebnisses kann durch 193 geteilt werden, um den Anteil zu identifizieren.  
 Für die andere Statistik wird die Anzahl besuchter Orte anhand der Länge des Ergebnisses der Anfrage ```api/points``` berechnet.
 ## Probleme
-Das Anzeigen der besuchten Orte in Form von Markern führte zu einem Problem. Dieses trat auf, wenn ein Ort wieder gelöscht werden sollte. Bei dem zuletzt hinzugefügten Ort stellte dies über den *Löschen* Button kein Problem dar, Orte die allerdings schon länger gespeichert waren, wurden nicht direkt beim ersten Klicken des Buttons entfernt. 
-Ursache des Problems ist, dass Mapbox selbst die auf der Karte angezeigten Marker nicht speichert. Daher können diese beim Löschen auch nicht richtig referenziert und entfernt werden. Sie verbleiben in der Ansicht, bis die Karte neu geladen wird.
+Das Anzeigen der besuchten Orte in Form von Markern führte zu einem Problem. Dieses trat auf, wenn ein Ort wieder gelöscht werden sollte. Bei dem zuletzt hinzugefügten Ort stellte dies über den *Löschen* Button kein Problem dar, Orte die allerdings schon länger gespeichert waren, wurden nicht direkt beim ersten Klicken des Buttons entfernt.  
+Ursache des Problems ist, dass Mapbox selbst die auf der Karte angezeigten Marker nicht speichert. Daher können diese beim Löschen auch nicht richtig referenziert und entfernt werden. Sie verbleiben in der Ansicht, bis die Karte neu geladen wird.  
 Aus diesem Grund wird die Karte nach jedem Löschen eines Punktes neu geladen. Alle noch in der Datenbank gespeicherten Orte werden dabei neu hinzugefügt. Dieser Vorgang beeinflusst die Performance zwar negativ, es war aber kein besserer Ansatz implementierbar, der die Karte nach dem Löschen eines Punktes korrekt anzeigt.
 # Fazit
 Die Entwicklung der Web-App konnte wie geplant erfolgen. 
@@ -158,8 +173,6 @@ Auch UI-Frameworks unterstützen die Entwicklung. Ein ansprechendes Design hat a
 Das beschriebene Problem konnte durch eine alternative Lösung behoben werden.
 
 Es wäre für die Zukunft denkbar weitere Funktionalitäten hinzuzufügen. Dabei könnte es sich beispielsweise um eine Funktion handeln, mit der man auch Länder oder Orte, die man noch besuchen möchte, hinzufügen kann. Diese würden dann andersfarbig auf der Karte angezeigt werden. Außerdem könnten die Statistiken erweitert werden, zum Beispiel um eine Aufteilung nach Kontinenten.
-# App-Nutzung
-1. Clone respository
-2. Run ```npm install```
-3. Run ```npm run dev```
-4. App runs on ```http://localhost:5173```
+
+# Info zu den Branches
+Da zum lokalen Starten des Projekts Umgebungsvariablen in einer ```.env``` Datei nötig sind, die nicht auf GitHub gepusht ist, ist am Anfgang der README.md eine Live-Demo verlinkt. Diese ist mittels Netlify deployt und verfügt über alle Funktionalitäten außer das Zurücksetzen des Passworts. Für das Deployment mussten einige URLs im Code geändert werden, diese Version liegt im Branch ```deployment```.
