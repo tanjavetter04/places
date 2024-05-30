@@ -19,14 +19,14 @@ Klickt man auf diesen, wird man auf die *Login* Seite weitergeleitet. Diese erre
 
 ![Login Seite](images/login.png)
 
-Sollte man noch keinen Account haben gibt es darunter einen Button *Sign up*. Dieser führt auf eine Seite, auf der man seine E-Mail - Adresse und ein Passwort eingeben kann um sich zu registrieren. Ist der Vorgang erfolgreich, wird man ebenfalls automatisch eingeloggt. 
+Sollte man noch keinen Account haben gibt es darunter einen Button *Sign up*. Dieser führt auf eine Seite, auf der man seine E-Mail-Adresse und ein Passwort eingeben kann um sich zu registrieren. Ist der Vorgang erfolgreich, wird man ebenfalls automatisch eingeloggt und weitergeleitet. 
 
-Hat man sein Passwort vergessen, kann man auf der Login Seite einen Link klicken, der zum *Password Reset* führt. Auf dieser Seite kann man in einem Formular eine E-Mail - Adresse eingeben. Bestätigt man die Eingabe über einen Button, erhält man eine E-Mail. Diese beinhaltet einen Link, der zu einer Seite führt, auf der man sein neues Passwort eingeben an.
+Hat man sein Passwort vergessen, kann man auf der Login Seite einen Link klicken, der zum *Password Reset* führt. Auf dieser Seite kann man in einem Formular eine E-Mail-Adresse eingeben. Bestätigt man die Eingabe über einen Button, erhält man eine E-Mail. Diese beinhaltet einen Link, der zu einer Seite führt, auf der man sein neues Passwort eingeben an.
 
-Die Home Page wird vollständig von einer Weltkarte in Globusform eingenommen. In der rechten oberen Ecke befindet sich eine Suchleiste. Dort kann man Orte und Länder suchen. Bereits während de Eingabe erhält man Vorschläge. Bestätigt man die Sucheingabe, zoomt die Karte zu dem entsprechenden Ort. Außerdem wird an dem Ort ein Marker auf der Karte gesetzt. Klickt man auf den Marker öffnet sich ein Popup. In diesem steht als Überschrift der Name des Ortes. Darunter folgen die passenden Koordinaten und ein *Löschen* Button. Dieser entfernt den gerade hinzugefügten Punkt. So lassen sich Ort und Länder die man bereits besucht hat eintragen.
+Die Home Page wird vollständig von einer Weltkarte in Globusform eingenommen. In der rechten oberen Ecke befindet sich eine Suchleiste. Dort kann man Orte und Länder suchen. Bereits während der Eingabe erhält man Vorschläge. Dabei werden nur deutsche Eingaben akzeptiert. Bestätigt man die Sucheingabe, zoomt die Karte zu dem entsprechenden Ort. Außerdem wird an dem Ort ein Marker auf der Karte gesetzt. Klickt man auf den Marker öffnet sich ein Popup. In diesem steht als Überschrift der Name des Ortes. Darunter folgen die passenden Koordinaten und ein *Löschen* Button. Dieser entfernt den gerade hinzugefügten Punkt. So lassen sich Ort und Länder die man bereits besucht hat eintragen.
 
 Zusätzlich zu dem gesetzten Marker wird das Land, in dem der Ort liegt, hellrot markiert. 
-Beim Löschen wird das Land auch wieder entfernt, wenn kein anderer Punkt in diesem Land mehr gespeichert ist. 
+Beim Löschen wird die Markierung des Landes auch wieder entfernt, wenn kein anderer Punkt in diesem Land mehr gespeichert ist. 
 
 ![Home Seite](images/home.png)
 
@@ -98,7 +98,7 @@ Des Weiteren können die Eingaben von Formularen mittels einem Befehl abgefragt 
 const formData = Object.fromEntries(await request.formData());
 ``` 
 ## Authentifizierung
-Das Registrieren, An- und Abmelden sowie Passwort zurücksetzen werden mithilfe von Supabase umgesetzt. Die benötigten Informationen dafür werden vom Nutzer auf den Seiten ```/login```,  ```/register```, ```/passwordReset``` und ```/newPassword``` eingegeben. Da es sich dabei um Formulare handelt, werden die Daten direkt mittels ```POST``` Requests an die API geschickt. Supabase stellt für die Funktionalitäten bereits Methoden bereit, die nur noch mit den passenden Parametern aufgerufen werden müssen:
+Das Registrieren, An- und Abmelden sowie Passwort zurücksetzen werden mithilfe von Supabase umgesetzt. Die benötigten Informationen dafür werden vom Nutzer auf den Seiten ```/login```,  ```/register```, ```/passwordReset``` und ```/newPassword``` eingegeben. Da es sich dabei um Formulare handelt, werden die Daten direkt mittels ```POST``` Requests an die API geschickt. Supabase stellt für diese Funktionalitäten Methoden bereit, die nur noch mit den passenden Parametern aufgerufen werden müssen:
 ```
 const { data, error: err } = await locals.supabase.auth.signInWithPassword({
 	email:  formData.email  as  string,
@@ -143,7 +143,7 @@ geocoder.on('result', function (e) {
 Dabei wird die API Route ```api/points``` als ```POST``` Request aufgerufen.  
 Dort wird zunächst der Punkt in der Datenbank gespeichert. Anschließend wird mithilfe der Reverse Geocoding API das zugehörige Land identifiziert. Dieses wird dann ebenfalls gespeichert. Vor der Speicherung muss allerdings anhand des Wertes der Spalte ```point_count``` identifiziert werden, ob das Land neu eingetragen werden muss (```POST```) oder geupdatet werden muss (```PUT```). Abhängig davon wird ```http://localhost:5173/api/country``` aufgerufen. Dort wird das Land mit dem passenden Wert von ```point_count``` gespeichert.
 ## Punkte anzeigen
-Die Funktion zum Anzeigen der Punkte wird immer beim Initialisieren der Karte und nach dem Hinzufügen eines Punktes aufgerufen. Wenn alle Punkte angezeigt sind, wird anschließend ```showCountries``` aufgerufen. Dort werden über die API Route ```api/countries``` alle Länder des Nutzers zurückgegeben und dem Filter für die Layer mit den Ländergrenzen hinzugefügt.  
+Die Funktion zum Anzeigen der Punkte wird immer beim Initialisieren der Karte und nach dem Hinzufügen eines Punktes aufgerufen. Wenn alle Punkte geladen sind, wird anschließend ```showCountries``` aufgerufen. Dort werden über die API Route ```api/countries``` alle Länder des Nutzers zurückgegeben und dem Filter für die Layer mit den Ländergrenzen hinzugefügt.  
 Alle Punkt werden über ```api/points``` mit einem ```GET``` Request aus der Datenbank geholt. Für jeden Punkt wird ein Marker erstellt und der Karte hinzugefügt. Außerdem wird der Ortsname des Punktes über die Reverse Geocoding API identifiziert (```getPlaceName```). Dem Marker wird ein Popup hinzugefügt. Dieses zeigt den Ortsnamen und die Koordinaten an. Außerdem existiert ein Löschen - Button mit einem Click - Listener: 
 ```
 deleteButton.addEventListener('click', () => {
@@ -157,7 +157,7 @@ Zum Löschen eines Punktes wird analog wie beim Hinzufügen vorgegangen. Statt d
 Anschließend wird die Karte neu geladen (siehe Probleme).
 ## Statistiken
 Es gibt zwei kleine Statistiken auf der entsprechenden Seite: ein Kreisdiagramm, dass den Anteil der besuchten Länder an den 193 UN-Ländern anzeigt und darunter eine Textzeile, die angibt, wie viele verschiedene Orte man in wie vielen Ländern schon besucht hat.  
-Dafür wird die API ```api/countries``` aufgerufen. Die Länge des Ergebnisses kann durch 193 geteilt werden, um den Anteil zu identifizieren.  
+Dafür wird die API ```api/countries``` aufgerufen. Die Anzahl zurückgegebener Länder kann durch 193 geteilt werden, um den Anteil zu identifizieren.  
 Für die andere Statistik wird die Anzahl besuchter Orte anhand der Länge des Ergebnisses der Anfrage ```api/points``` berechnet.
 ## Probleme
 Das Anzeigen der besuchten Orte in Form von Markern führte zu einem Problem. Dieses trat auf, wenn ein Ort wieder gelöscht werden sollte. Bei dem zuletzt hinzugefügten Ort stellte dies über den *Löschen* Button kein Problem dar, Orte die allerdings schon länger gespeichert waren, wurden nicht direkt beim ersten Klicken des Buttons entfernt.  
@@ -175,4 +175,4 @@ Das beschriebene Problem konnte durch eine alternative Lösung behoben werden.
 Es wäre für die Zukunft denkbar weitere Funktionalitäten hinzuzufügen. Dabei könnte es sich beispielsweise um eine Funktion handeln, mit der man auch Länder oder Orte, die man noch besuchen möchte, hinzufügen kann. Diese würden dann andersfarbig auf der Karte angezeigt werden. Außerdem könnten die Statistiken erweitert werden, zum Beispiel um eine Aufteilung nach Kontinenten.
 
 # Info zu den Branches
-Da zum lokalen Starten des Projekts Umgebungsvariablen in einer ```.env``` Datei nötig sind, die nicht auf GitHub gepusht ist, ist am Anfgang der README.md eine Live-Demo verlinkt. Diese ist mittels Netlify deployt und verfügt über alle Funktionalitäten außer das Zurücksetzen des Passworts. Für das Deployment mussten einige URLs im Code geändert werden, diese Version liegt im Branch ```deployment```.
+Da zum lokalen Starten des Projekts Umgebungsvariablen in einer ```.env``` Datei nötig sind, die nicht auf GitHub gepusht ist, ist am Anfang der README.md eine Live-Demo verlinkt. Diese ist mittels Netlify deployt und verfügt über alle Funktionalitäten außer dem Zurücksetzen des Passworts. Für das Deployment mussten einige URLs im Code geändert werden, diese Version liegt im Branch ```deployment```.
